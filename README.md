@@ -162,11 +162,21 @@ docs/                     README previews
 
 ## A note on Google Sheets
 
-Excel's hidden-formula attribute has no equivalent in Google Sheets — anyone can
-click a cell and read the formula. Sheets protects *ranges*, not
-cells-with-hidden-formulas, and Excel sheet protection does not import as a
-faithful equivalent. Any model that must be both locked-down and Sheets-native
-has to pick which of those two it means.
+The workbook was uploaded to Google Sheets and tested feature by feature. The
+calculations, layout, conditional formatting and data validation all survive.
+**The locking does not.**
+
+In Sheets, a formula cell that is locked and formula-hidden in Excel can be
+overwritten by typing into it, with no warning. In the test, `999` into one
+calculation cell took profit on cost from 28.3% to 136.5% — and the verdict
+banner still read MEETS THRESHOLD, in green.
+
+Excel's hidden-formula attribute has no equivalent in Sheets at all, so this is
+not a bug to work around: any model that must be both locked down *and*
+Sheets-native has to choose which of the two it means.
+
+Full results, method and the three ways to resolve it:
+[`GOOGLE-SHEETS-TEST.md`](GOOGLE-SHEETS-TEST.md).
 
 ## About the numbers
 
