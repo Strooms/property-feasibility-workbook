@@ -1,4 +1,10 @@
 * text=auto eol=lf
+
+# Windows-native files must keep CRLF or they misbehave when run
+*.cmd text eol=crlf
+*.bat text eol=crlf
+*.bas text eol=crlf
+
 *.png binary
 *.xlsx binary
 *.docx binary
