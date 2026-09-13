@@ -1,0 +1,10 @@
+.venv/
+__pycache__/
+*.pyc
+output/_charts/
+output/_*.png
+~$*
+*.tmp
+
+# Internal bidding analysis - not for publication
+NOTES.md

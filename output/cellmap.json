@@ -1,0 +1,116 @@
+{
+ "Residential": {
+  "land": [
+   "B6",
+   "B7",
+   "B8",
+   "B9"
+  ],
+  "retail": [
+   "B11",
+   "B12",
+   "B13",
+   "B14"
+  ],
+  "units": "B15",
+  "build": "B16",
+  "council": "B17",
+  "stamp": "B20",
+  "prof": "B21",
+  "cont": "B22",
+  "sell": "B23",
+  "fin": "B24",
+  "threshold": "B27",
+  "avg_land": "K4",
+  "avg_retail": "K5",
+  "land_purchase": "K6",
+  "stamp_amt": "K7",
+  "total_purchase": "K8",
+  "gross": "K9",
+  "sell_amt": "K10",
+  "net_real": "K11",
+  "build_total": "K12",
+  "council_total": "K13",
+  "prof_amt": "K14",
+  "cont_amt": "K15",
+  "fin_amt": "K16",
+  "tdc": "K17",
+  "total_cost": "K18",
+  "net_profit": "K19",
+  "poc": "K20",
+  "verdict": "D14",
+  "tiles": {
+   "profit": "D7",
+   "poc": "G7",
+   "cost": "D11",
+   "gdv": "G11"
+  },
+  "sensitivity": {
+   "top_left": "E31",
+   "shifts": [
+    -0.1,
+    -0.05,
+    0.0,
+    0.05,
+    0.1
+   ]
+  }
+ },
+ "Townhouse": {
+  "land": [
+   "B6",
+   "B7",
+   "B8",
+   "B9"
+  ],
+  "retail": [
+   "B11",
+   "B12",
+   "B13",
+   "B14"
+  ],
+  "units": "B15",
+  "build": "B16",
+  "council": "B17",
+  "stamp": "B20",
+  "prof": "B21",
+  "cont": "B22",
+  "sell": "B23",
+  "fin": "B24",
+  "threshold": "B27",
+  "avg_land": "K4",
+  "avg_retail": "K5",
+  "land_purchase": "K6",
+  "stamp_amt": "K7",
+  "total_purchase": "K8",
+  "gross": "K9",
+  "sell_amt": "K10",
+  "net_real": "K11",
+  "build_total": "K12",
+  "council_total": "K13",
+  "prof_amt": "K14",
+  "cont_amt": "K15",
+  "fin_amt": "K16",
+  "tdc": "K17",
+  "total_cost": "K18",
+  "net_profit": "K19",
+  "poc": "K20",
+  "verdict": "D14",
+  "tiles": {
+   "profit": "D7",
+   "poc": "G7",
+   "cost": "D11",
+   "gdv": "G11"
+  },
+  "sensitivity": {
+   "top_left": "E31",
+   "shifts": [
+    -0.1,
+    -0.05,
+    0.0,
+    0.05,
+    0.1
+   ]
+  }
+ }
+}
