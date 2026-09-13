@@ -61,6 +61,73 @@ version of this model that runs natively in Sheets shows its workings.
 Protection itself *is* rebuildable in Sheets, as protected ranges, but that has
 to be authored in Sheets. It does not arrive with the `.xlsx`.
 
+## Can the formulas be hidden in Sheets at all?
+
+Three approaches, all tested.
+
+### 1. Apps Script custom function — hides the arithmetic, breaks Excel
+
+Move the calculation into a script and call it from the cell. Tested on a native
+Google Sheet:
+
+```javascript
+function NETREAL(land, retail, units) {
+  var gross = retail * units;
+  var net = gross - gross * 0.025;
+  var purchase = land * units * 1.055;
+  return net - purchase;
+}
+```
+
+`=NETREAL(A1,B1,C1)` returned 3,746,250 — correct. And the formula bar shows
+only `=NETREAL(A1,B1,C1)`. **The rates and the chain are genuinely not visible.**
+
+Two costs, both material:
+
+- **The file stops working in Excel.** Written into an `.xlsx` and opened in
+  Excel, the same cell displays `#NAME?` — Excel has no such function. Verified,
+  not assumed. For a brief whose primary platform is Excel, this is fatal.
+- **It is obfuscation, not protection.** Anyone with edit access can open
+  Extensions → Apps Script and read the code. The users of this workbook must
+  type into it, so they have edit access by definition.
+
+Worth having in the toolkit for Sheets-only work. Not an answer for this brief.
+
+### 2. Keep the arithmetic in a hidden column — works, and keeps Excel
+
+This is the architecture the workbook already uses, and it turns out to matter
+more in Sheets than in Excel. The calculation chain lives in column K, hidden;
+the dashboard cells are bare references.
+
+Checked what each visible cell actually exposes:
+
+| Cell | Formula a Sheets user can read |
+|---|---|
+| Net profit tile | `=K19` |
+| Cost breakdown | `=K5` and similar |
+| **Sensitivity grid** | `=IFERROR($K$11*(1+$D31)/(($K$8+($K$12*(1+E$30))+$K$13+…` |
+
+So two thirds of the dashboard leaks nothing useful — a reference to a hidden
+cell is not a formula anyone can learn from. **The sensitivity grid is the
+exception**, and it currently carries the whole cost chain inline in all 25
+cells.
+
+Moving that arithmetic into the hidden block as well, leaving the grid cells as
+bare references, would mean no visible cell in the workbook exposes a rate or a
+relationship — in Excel *or* Sheets, with no scripts and no loss of
+compatibility. That is a real design improvement rather than a workaround, and
+it is roughly an hour's work.
+
+It still is not security: a determined user can unhide the column. But it moves
+the model from "readable at a glance" to "you have to go looking".
+
+### 3. Protected ranges — blocks edits, hides nothing
+
+Sheets can restrict who edits a range, which fixes the overwrite problem from
+the section above. It does not hide anything: the formula bar still shows the
+formula to anyone who can select the cell. Has to be authored in Sheets; it does
+not arrive with the `.xlsx`.
+
 ## So the requirement has to give somewhere
 
 Three honest options, and it is the client's call:
@@ -77,11 +144,25 @@ Three honest options, and it is the client's call:
 Option 1 is usually right for a lead magnet: most recipients open it in Excel,
 and the Sheets users still get a working calculator.
 
+## Recommendation
+
+Option 1 — Excel is the deliverable — **plus the hidden-column tightening from
+§2 above**. That combination gives:
+
+- Excel: locked, formula-hidden, protected. Unchanged.
+- Sheets: calculates correctly, looks right, and exposes only bare references
+  rather than the cost chain. Still editable, which has to be stated plainly to
+  the client rather than glossed over.
+
+No scripts, no second version to maintain, no loss of compatibility.
+
 ## Not tested
 
 - **Native conversion** (*File → Save as Google Sheets*) was not tested
   separately. Formula hiding is absent in Sheets either way, so that finding
   holds; protection and data bars might behave differently after a true
   conversion.
+- Whether a protected range in Sheets stops another editor unhiding a column.
+  Verifying that needs a second account.
 - Sheets mobile apps.
 - Whether re-exporting from Sheets back to `.xlsx` restores anything.
