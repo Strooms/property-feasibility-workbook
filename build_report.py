@@ -9,6 +9,7 @@ DOCX with a PDF alongside it.
 from __future__ import annotations
 
 import argparse
+import os
 import json
 import sys
 from datetime import date
@@ -412,7 +413,14 @@ def main(argv=None) -> int:
     ap.add_argument("--sheet", default="Residential", choices=["Residential", "Townhouse"])
     ap.add_argument("--client", default="Meridian Property Group")
     ap.add_argument("--pdf", action="store_true")
+    ap.add_argument("--workbook", type=Path, default=None,
+                    help="Workbook to read. Defaults to output/property_feasibility.xlsx.")
+    ap.add_argument("--open", action="store_true", dest="open_after",
+                    help="Open the finished report when done.")
     args = ap.parse_args(argv)
+
+    if args.workbook:
+        globals()["WB"] = args.workbook
 
     if not WB.exists():
         print(f"Workbook not found: {WB}  (run build_workbook.py first)")
@@ -447,6 +455,10 @@ def main(argv=None) -> int:
     print(f"\nDone\n  {out}")
     if args.pdf:
         print(f"  {out.with_suffix('.pdf')}")
+
+    if args.open_after:
+        target = out.with_suffix(".pdf") if args.pdf else out
+        os.startfile(target)  # noqa: S606 - Windows only, by design
     return 0
 
 

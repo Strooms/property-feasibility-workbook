@@ -96,6 +96,21 @@ Report options:
 --pdf                             also export PDF (needs Microsoft Word)
 ```
 
+## Generating the report from inside Excel
+
+Two routes, covered in [`excel_addin/README.md`](excel_addin/README.md):
+
+- **`Generate report.cmd`** — double-click, pick a deal type, the PDF opens.
+  Nothing to install or trust.
+- **A ribbon button** — import [`excel_addin/FeasibilityReport.bas`](excel_addin/FeasibilityReport.bas)
+  and save it as an `.xlam` add-in. It saves the workbook, runs the generator
+  against the live values, and opens the result.
+
+The button is deliberately **not** embedded in the workbook. That would make it
+a macro-enabled `.xlsm`, and downloaded `.xlsm` files have their macros blocked
+by default, while Google Sheets cannot run VBA at all. The workbook stays a
+plain `.xlsx` anyone can open anywhere; the generator sits beside it.
+
 ## How it is tested
 
 Two scripts, because "it opens without an error" is not evidence.
