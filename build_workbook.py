@@ -10,6 +10,7 @@ Writes output/property_feasibility.xlsx and output/cellmap.json
 
 from __future__ import annotations
 
+import argparse
 import json
 from pathlib import Path
 
@@ -142,7 +143,7 @@ def tile(ws, r0, c0, c1, label_text, formula, fmt, *, big=18, colour=NAVY):
 # --- the deal sheet --------------------------------------------------------
 
 
-def build_deal_sheet(ws, name: str, d: dict) -> dict:
+def build_deal_sheet(ws, name: str, d: dict, password: str | None = None) -> dict:
     ws.sheet_view.showGridLines = False
     widths = {"A": 33, "B": 15, "C": 2.5, "D": 13.5, "E": 13.5, "F": 13.5,
               "G": 13.5, "H": 13.5, "I": 13.5}
@@ -368,9 +369,16 @@ def build_deal_sheet(ws, name: str, d: dict) -> dict:
     udv.add(ws[units])
 
     # --- protection and print ---
+    # Locked cells cannot be selected, so a user cannot read a hidden formula by
+    # clicking it, and the flags above leave column formatting disabled, which is
+    # what stops the working column in K being unhidden.
     ws.protection.sheet = True
     ws.protection.enable()
     ws.protection.selectLockedCells = False
+    if password:
+        # Inputs are unlocked, so this never prompts anyone typing a deal in.
+        # It only stops Review -> Unprotect Sheet being a single click.
+        ws.protection.password = password
 
     last = max(left_end, tail) + 1
 
@@ -481,14 +489,23 @@ def build_start_here(ws, names: list[str]) -> None:
     ws.sheet_properties.pageSetUpPr.fitToPage = True
 
 
-def main() -> None:
+def main(argv=None) -> None:
+    ap = argparse.ArgumentParser(description="Build the property feasibility workbook.")
+    ap.add_argument(
+        "--password", default=None,
+        help="Protect the deal sheets with this password. Inputs stay editable; "
+             "it only stops Review > Unprotect Sheet being a single click. "
+             "A deterrent, not security - see GOOGLE-SHEETS-TEST.md.")
+    args = ap.parse_args(argv)
+
     wb = Workbook()
     start = wb.active
     start.title = "Start Here"
 
     refs = {}
     for name, defaults in DEFAULTS.items():
-        refs[name] = build_deal_sheet(wb.create_sheet(name), name, defaults)
+        refs[name] = build_deal_sheet(wb.create_sheet(name), name, defaults,
+                                      password=args.password)
     build_start_here(start, list(DEFAULTS))
 
     out = Path(__file__).parent / "output" / "property_feasibility.xlsx"

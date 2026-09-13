@@ -52,6 +52,7 @@ output/feasibility_report_residential.docx  +  .pdf
 | **Editable threshold** | The 25% test is itself an input. Change it and the verdict follows |
 | **Two deal types** | Residential and Townhouse on separate tabs — the cost structures genuinely differ |
 | **Guards the user** | Percentages constrained to 0–100%, dwelling count to whole numbers above zero, and a zero-cost deal reads `ENTER YOUR DEAL` rather than `#DIV/0!` |
+| **Working column stays shut** | The calculation chain lives in a hidden column; protection blocks unhiding it, and locked cells cannot be selected, so a formula cannot be read by clicking. `--password` stops Unprotect Sheet being one click |
 | **Prints clean** | One page per sheet, fitted, with print areas set |
 
 ### The sensitivity grid

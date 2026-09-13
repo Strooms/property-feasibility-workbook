@@ -20,6 +20,19 @@ OUT = Path(__file__).parent / "output"
 WB = OUT / "property_feasibility.xlsx"
 CELLMAP = OUT / "cellmap.json"
 
+# The workbook may carry a sheet-protection password. Unprotect() without one
+# raises a modal password dialog that hangs Excel with no window to dismiss, so
+# the password is always passed explicitly. Override with --password.
+DEFAULT_PASSWORD = "feas2026"
+
+
+def unprotect(ws, password: str) -> None:
+    try:
+        ws.Unprotect(password)
+    except Exception:
+        # Unprotected sheets reject a password argument; that is fine.
+        pass
+
 
 def expected(d: dict) -> dict:
     """Independent reference model."""
@@ -104,7 +117,7 @@ def main() -> int:
     try:
         wb = excel.Workbooks.Open(str(WB))
         ws = wb.Worksheets("Residential")
-        ws.Unprotect()
+        unprotect(ws, DEFAULT_PASSWORD)
 
         for name, deal in DEALS.items():
             write_deal(ws, CELLS, deal)

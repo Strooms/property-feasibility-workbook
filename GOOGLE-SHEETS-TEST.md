@@ -121,6 +121,47 @@ it is roughly an hour's work.
 It still is not security: a determined user can unhide the column. But it moves
 the model from "readable at a glance" to "you have to go looking".
 
+### 2b. How much does the protection actually buy? (Excel)
+
+Worth knowing precisely, because it decides what can honestly be promised to a
+client. Tested against the built workbook:
+
+| Attempt | Result |
+|---|---|
+| Type into an input cell | accepted, no prompt |
+| Type into a formula cell | refused |
+| Read a hidden formula | refused — locked cells cannot even be selected |
+| **Unhide column K** | **blocked** |
+| `Review → Unprotect Sheet`, no password | one click, protection gone |
+| Same, with `--password` set | rejected without the password |
+
+So adding a password is worth doing, and it does **not** break the brief's
+"no password prompt that blocks the user from typing in the inputs" — inputs are
+unlocked, so nobody typing a deal is ever prompted. The password only stands
+between a curious user and the Unprotect button. `build_workbook.py --password`
+does this.
+
+**But it is a deterrent, not a secret.** An `.xlsx` is a zip archive, and sheet
+protection is a single XML element inside it. Deleting that element from the
+three worksheets removed all protection in one pass, password or not, and the
+formulas were readable again:
+
+```
+sheetProtection elements removed : 3
+protection now active            : False
+formula in K19 readable          : =K11-K18
+```
+
+That is not a flaw in the build; it is how the format works, and no Excel
+workbook anywhere is better off. It sets what can be claimed:
+
+> The workbook cannot be broken *by accident*, and its workings are not on
+> display. It is not a vault, and nobody should be told it is one.
+
+For a lead magnet that distinction barely matters — the risk being managed is a
+prospect silently corrupting the model and trusting the answer, not a competitor
+reverse-engineering it. Worth saying out loud to the client anyway.
+
 ### 3. Protected ranges — blocks edits, hides nothing
 
 Sheets can restrict who edits a range, which fixes the overwrite problem from
